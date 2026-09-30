@@ -50,6 +50,8 @@ public class _DiscordData {
 
         public static int id;
         public static String credential;
+        public String username;
+        public String password;
     }
 
     public static class ClientData {
