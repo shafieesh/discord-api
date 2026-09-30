@@ -21,11 +21,11 @@ import java.util.concurrent.atomic.AtomicReference;
 
 public class _DiscordAPI extends _API {
 
-    private static final Map<String, String> EMBED_STORAGE = new HashMap<>();
+    public static final Map<String, String> EMBED_STORAGE = new HashMap<>();
 
-    private static _DiscordAPI INSTANCE;
-    private static final SocketPool POOL = new SocketPool("engine-discord.chainedminds.com", 4395, 5);
-    private static final ExecutorService ASYNC_POOL_EXECUTOR = Executors.newCachedThreadPool();
+    public static _DiscordAPI INSTANCE;
+    public static final SocketPool POOL = new SocketPool("engine-discord.chainedminds.com", 4395, 5);
+    public static final ExecutorService ASYNC_POOL_EXECUTOR = Executors.newCachedThreadPool();
 
     public static synchronized _DiscordAPI get() {
 
@@ -60,12 +60,12 @@ public class _DiscordAPI extends _API {
         return false;
     }
 
-    private void call(_DiscordData request, boolean async, ApiCallback callback) {
+    public void call(_DiscordData request, boolean async, ApiCallback callback) {
 
         callPool(request, async, callback);
     }
 
-    private void callHttp(_DiscordData request, boolean async, ApiCallback callback) {
+    public void callHttp(_DiscordData request, boolean async, ApiCallback callback) {
 
         String requestJson = Json.getString(request);
 
@@ -80,7 +80,7 @@ public class _DiscordAPI extends _API {
         call(builder, async, callback);
     }
 
-    private void callPool(_DiscordData request, boolean async, ApiCallback callback) {
+    public void callPool(_DiscordData request, boolean async, ApiCallback callback) {
 
         if (async) {
 
