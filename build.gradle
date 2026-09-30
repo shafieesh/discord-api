@@ -9,8 +9,8 @@ java {
     }
 }
 
-group 'com.chainedminds'
-version = '1.0.2'
+group 'com.chainedminds.discord.api'
+version = '1.0.3'
 
 repositories {
     mavenCentral()
