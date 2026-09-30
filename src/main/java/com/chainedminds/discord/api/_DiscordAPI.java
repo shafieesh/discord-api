@@ -41,10 +41,10 @@ public class _DiscordAPI extends _API {
     
     public static void config(int id, String credential, String appName, String language) {
         
-        _DiscordData.AccountData.id = id;
-        _DiscordData.AccountData.credential = credential;
-        _DiscordData.ClientData.appName = appName;
-        _DiscordData.ClientData.language = language;
+        _DiscordData.accountID = id;
+        _DiscordData.accountCredential = credential;
+        _DiscordData.clientAppName = appName;
+        _DiscordData.clientLanguage = language;
     }
 
     public static boolean canUpdateEmbed(_DiscordData.CompactEmbed embed) {

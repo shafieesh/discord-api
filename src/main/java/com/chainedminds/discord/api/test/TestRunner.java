@@ -6,7 +6,7 @@ public class TestRunner {
 
     public static  void main(String[] args) {
 
-        TestDiscordAPI.config(0, "", "test", "en");
+        TestDiscordAPI.config(2, "cred", "test", "en");
 
         TestDiscordData a = new TestDiscordData();
         a.guildID = 1L;

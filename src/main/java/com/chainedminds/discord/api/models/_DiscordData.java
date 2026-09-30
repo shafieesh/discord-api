@@ -10,6 +10,11 @@ import java.util.Map;
 
 public class _DiscordData {
 
+    public static int accountID;
+    public static String accountCredential;
+    public static String clientAppName = "API";;
+    public static String clientLanguage = "en";
+
     public final AccountData account = new AccountData();
     public final ClientData client = new ClientData();
 
@@ -48,18 +53,18 @@ public class _DiscordData {
 
     public static class AccountData {
 
-        public static int id;
-        public static String credential;
+        public int id = accountID;
+        public String credential = accountCredential;
         public String username;
         public String password;
     }
 
     public static class ClientData {
 
-        public static String appName = "API";
+        public String appName = clientAppName;
         public final String platform = "API";
         public final String version = "1.0.0";
-        public static String language = "en";
+        public String language = clientLanguage;
     }
 
     public static class CompactEmbed {
