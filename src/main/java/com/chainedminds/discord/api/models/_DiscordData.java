@@ -1,5 +1,6 @@
 package com.chainedminds.discord.api.models;
 
+import com.chainedminds.discord.api._DiscordAPI;
 import com.chainedminds.models._FileData;
 
 import java.util.ArrayList;
@@ -67,6 +68,7 @@ public class _DiscordData {
         public List<Field> fields = new ArrayList<>();
         public String footer;
         public List<SelectionData> selections = new ArrayList<>();
+        public List<ButtonData> buttons = new ArrayList<>();
         public List<Long> mentionUsers;
         public List<Long> mentionRoles;
 
@@ -91,6 +93,11 @@ public class _DiscordData {
                 this.name = name;
                 this.value = value;
                 this.inline = inline;
+
+                if (this.value != null && this.value.length() > _DiscordAPI.VALUE_MAX_LENGTH) {
+
+                    this.value = this.value.substring(0, _DiscordAPI.VALUE_MAX_LENGTH);
+                }
             }
 
             public Field(boolean inline) {
@@ -210,6 +217,34 @@ public class _DiscordData {
                 }
 
             }
+        }
+    }
+
+    public static class ButtonData {
+
+        public String type;
+        public String id;
+        public String url;
+        public String label;
+
+        public static ButtonData link(String url, String label) {
+
+            ButtonData button = new ButtonData();
+            button.type = "link";
+            button.url = url;
+            button.label = label;
+
+            return button;
+        }
+
+        public static ButtonData primary(String id, String label) {
+
+            ButtonData button = new ButtonData();
+            button.type = "primary";
+            button.id = id;
+            button.label = label;
+
+            return button;
         }
     }
 

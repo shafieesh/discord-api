@@ -21,6 +21,8 @@ import java.util.concurrent.atomic.AtomicReference;
 
 public class _DiscordAPI extends _API {
 
+    public static final int VALUE_MAX_LENGTH = 4000;
+
     public static final Map<String, String> EMBED_STORAGE = new HashMap<>();
 
     public static _DiscordAPI INSTANCE;
