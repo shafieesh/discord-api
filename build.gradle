@@ -1,23 +1,16 @@
-import java.lang.reflect.Method
-
 plugins {
     id 'java'
+    id 'java-library'
 }
-
-group = 'org.example'
-version = '1.0-SNAPSHOT'
 
 java {
     toolchain {
-        languageVersion = JavaLanguageVersion.of(25)
+        languageVersion = JavaLanguageVersion.of(21)
     }
 }
 
-compileJava.options.encoding = 'UTF-8'
-
-tasks.withType(JavaCompile).configureEach {
-    options.encoding = 'UTF-8'
-}
+group 'com.chainedminds'
+version = '1.0.1'
 
 repositories {
     mavenCentral()
