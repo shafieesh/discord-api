@@ -5,12 +5,13 @@ import com.chainedminds.api._API;
 import com.chainedminds.discord.api.models._DiscordData;
 import com.chainedminds.models._FileData;
 import com.chainedminds.utilities.SocketPool;
+import com.chainedminds.utilities._Log;
 import com.chainedminds.utilities.json.Json;
 import okhttp3.MediaType;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 
-import java.io.File;
+import java.io.*;
 import java.nio.file.Path;
 import java.util.*;
 import java.util.concurrent.ExecutorService;
@@ -26,7 +27,8 @@ public class _DiscordAPI extends _API {
     public static final Map<String, String> EMBED_STORAGE = new HashMap<>();
 
     public static _DiscordAPI INSTANCE;
-    public static final SocketPool POOL = new SocketPool("engine-discord.chainedminds.com", 4395, 5);
+    public static final SocketPool MESSAGE_POOL = new SocketPool("engine-discord.chainedminds.com", 4395, 5);
+    public static final SocketPool FILE_POOL = new SocketPool("engine-discord.chainedminds.com", 81, 1);
     public static final ExecutorService ASYNC_POOL_EXECUTOR = Executors.newCachedThreadPool();
 
     public static synchronized _DiscordAPI get() {
@@ -38,9 +40,9 @@ public class _DiscordAPI extends _API {
 
         return INSTANCE;
     }
-    
+
     public static void config(int id, String credential, String appName, String language) {
-        
+
         _DiscordData.accountID = id;
         _DiscordData.accountCredential = credential;
         _DiscordData.clientAppName = appName;
@@ -90,7 +92,7 @@ public class _DiscordAPI extends _API {
 
                 byte[] requestBytes = Json.getBytes(request);
 
-                byte[] responseBytes = SocketPool.transfer(POOL, requestBytes);
+                byte[] responseBytes = SocketPool.transfer(MESSAGE_POOL, requestBytes);
 
                 if (callback != null) {
 
@@ -115,7 +117,7 @@ public class _DiscordAPI extends _API {
 
             byte[] requestBytes = Json.getBytes(request);
 
-            byte[] responseBytes = SocketPool.transfer(POOL, requestBytes);
+            byte[] responseBytes = SocketPool.transfer(MESSAGE_POOL, requestBytes);
 
             if (callback != null) {
 
@@ -139,43 +141,49 @@ public class _DiscordAPI extends _API {
 
     public boolean upload(File file) {
 
-        AtomicBoolean wasSuccessful = new AtomicBoolean(false);
+        String fileName = file.getName();
+        long fileSize = file.length();
 
-        RequestBody fileBody = RequestBody.create(file, MediaType.parse("application/octet-stream"));
+        _DiscordData request = new _DiscordData();
+        request.request = 1008;
+        request.file = new _FileData();
+        request.file.path = "upload.chainedminds.com";
+        request.file.name = fileName;
 
-        Request.Builder builder = new Request.Builder();
-        builder.url("https://upload-discord.chainedminds.com/" + file.getName());
-        builder.post(fileBody);
+        byte[] requestBytes = Json.getBytes(request);
+        byte[] responseBytes = null;
 
-        _API.instance().call(builder, false, new ApiCallback() {
-            @Override
-            public void onError(String error, String message) {
+        try (InputStream inputStream = new FileInputStream(file)) {
 
-                System.err.println("DiscordAPI upload " + error + " : " + message);
-            }
+            responseBytes = SocketPool.transfer(FILE_POOL, requestBytes, inputStream, fileSize, null);
 
-            @Override
-            public void onResponse(int code, Map<String, List<String>> headers, String response) {
+        } catch (Exception e) {
 
-                if (code != 200) {
+            _Log.error("DiscordAPI-Upload", e);
+        }
 
-                    throw new RuntimeException("Response code : " + code);
-                }
+        if (responseBytes != null) {
 
-                _DiscordData responseData = Json.getObject(response, _DiscordData.class);
+            _DiscordData response = Json.getObject(requestBytes, _DiscordData.class);
 
-                if (responseData != null && responseData.response == _Codes.RESPONSE_OK) {
+            if (response != null) {
 
-                    wasSuccessful.set(true);
+                if (response.response == _Codes.RESPONSE_OK) {
+
+                    return true;
 
                 } else {
 
-                    throw new RuntimeException("Response  : " + response);
+                    _Log.error("DiscordAPI-Upload", "API : " + new String(requestBytes));
                 }
-            }
-        });
 
-        return wasSuccessful.get();
+            } else {
+
+                _Log.error("DiscordAPI-Upload", "API : no response");
+            }
+        }
+
+        return false;
     }
 
     //----------------------------------------------------------
