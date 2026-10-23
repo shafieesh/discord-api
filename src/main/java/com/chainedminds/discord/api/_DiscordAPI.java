@@ -147,7 +147,7 @@ public class _DiscordAPI extends _API {
         _DiscordData request = new _DiscordData();
         request.request = 1008;
         request.file = new _FileData();
-        request.file.path = "upload.chainedminds.com";
+        request.file.path = "upload-discord.chainedminds";
         request.file.name = fileName;
 
         byte[] requestBytes = Json.getBytes(request);
