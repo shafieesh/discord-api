@@ -164,7 +164,7 @@ public class _DiscordAPI extends _API {
 
         if (responseBytes != null) {
 
-            _DiscordData response = Json.getObject(requestBytes, _DiscordData.class);
+            _DiscordData response = Json.getObject(responseBytes, _DiscordData.class);
 
             if (response != null) {
 
@@ -174,7 +174,7 @@ public class _DiscordAPI extends _API {
 
                 } else {
 
-                    _Log.error("DiscordAPI-Upload", "API : " + new String(requestBytes));
+                    _Log.error("DiscordAPI-Upload", "API : " + new String(responseBytes));
                 }
 
             } else {
