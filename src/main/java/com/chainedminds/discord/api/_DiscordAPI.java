@@ -188,13 +188,14 @@ public class _DiscordAPI extends _API {
 
     //----------------------------------------------------------
 
-    public boolean setEmbed(long guildID, long channelID, _DiscordData.CompactEmbed newEmbed) {
+    public boolean setEmbed(String bot, long guildID, long channelID, _DiscordData.CompactEmbed newEmbed) {
 
         AtomicBoolean wasSuccessful = new AtomicBoolean(false);
 
         _DiscordData requestData = new _DiscordData();
         requestData.request = 1009;
         requestData.subRequest = 2000;
+        requestData.bot = bot;
         requestData.guildID = guildID;
         requestData.channelID = channelID;
         requestData.embed = newEmbed;
@@ -230,13 +231,14 @@ public class _DiscordAPI extends _API {
         return wasSuccessful.get();
     }
 
-    public boolean sendEmbed(long guildID, long channelID, _DiscordData.CompactEmbed newEmbed) {
+    public boolean sendEmbed(String bot, long guildID, long channelID, _DiscordData.CompactEmbed newEmbed) {
 
         AtomicBoolean wasSuccessful = new AtomicBoolean(false);
 
         _DiscordData requestData = new _DiscordData();
         requestData.request = 1009;
         requestData.subRequest = 2003;
+        requestData.bot = bot;
         requestData.guildID = guildID;
         requestData.channelID = channelID;
         requestData.embed = newEmbed;
@@ -272,13 +274,14 @@ public class _DiscordAPI extends _API {
         return wasSuccessful.get();
     }
 
-    public boolean editEmbed(long guildID, long channelID, _DiscordData.CompactEmbed newEmbed) {
+    public boolean editEmbed(String bot, long guildID, long channelID, _DiscordData.CompactEmbed newEmbed) {
 
         AtomicBoolean wasSuccessful = new AtomicBoolean(false);
 
         _DiscordData requestData = new _DiscordData();
         requestData.request = 1009;
         requestData.subRequest = 2018;
+        requestData.bot = bot;
         requestData.guildID = guildID;
         requestData.channelID = channelID;
         requestData.embed = newEmbed;
@@ -314,13 +317,14 @@ public class _DiscordAPI extends _API {
         return wasSuccessful.get();
     }
 
-    public boolean deleteEmbed(long guildID, long channelID, String embedID) {
+    public boolean deleteEmbed(String bot, long guildID, long channelID, String embedID) {
 
         AtomicBoolean wasSuccessful = new AtomicBoolean(false);
 
         _DiscordData requestData = new _DiscordData();
         requestData.request = 1009;
         requestData.subRequest = 2001;
+        requestData.bot = bot;
         requestData.guildID = guildID;
         requestData.channelID = channelID;
         requestData.embed = new _DiscordData.CompactEmbed();

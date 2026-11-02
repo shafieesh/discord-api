@@ -28,6 +28,7 @@ public class _DiscordData {
     public _FileData file;
     public List<_FileData> files;
 
+    public String bot;
     public Long guildID;
     public Long categoryID;
     public Long channelID;
