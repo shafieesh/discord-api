@@ -24,7 +24,7 @@ public class _DiscordAPI extends _API {
 
     public static final int VALUE_MAX_LENGTH = 4000;
 
-    public static final Map<String, String> EMBED_STORAGE = new HashMap<>();
+    public static final Map<String, String> COMPONENT_STORAGE = new HashMap<>();
 
     public static _DiscordAPI INSTANCE;
     public static final SocketPool MESSAGE_POOL = new SocketPool("engine-discord.chainedminds.com", 4395, 5);
@@ -49,14 +49,14 @@ public class _DiscordAPI extends _API {
         _DiscordData.clientLanguage = language;
     }
 
-    public static boolean canUpdateEmbed(_DiscordData.CompactEmbed embed) {
+    public static boolean canUpdateComponent(_DiscordData.CompactComponent component) {
 
-        String key = embed.footer;
-        String jsonEmbed = Json.getString(embed);
+        String key = component.footer;
+        String jsonComponent = Json.getString(component);
 
-        if (!jsonEmbed.equals(EMBED_STORAGE.get(key))) {
+        if (!jsonComponent.equals(COMPONENT_STORAGE.get(key))) {
 
-            EMBED_STORAGE.put(key, jsonEmbed);
+            COMPONENT_STORAGE.put(key, jsonComponent);
 
             return true;
         }
@@ -188,7 +188,7 @@ public class _DiscordAPI extends _API {
 
     //----------------------------------------------------------
 
-    public boolean setEmbed(String bot, long guildID, long channelID, _DiscordData.CompactEmbed newEmbed) {
+    public boolean setComponent(String bot, long guildID, long channelID, _DiscordData.CompactComponent component) {
 
         AtomicBoolean wasSuccessful = new AtomicBoolean(false);
 
@@ -198,13 +198,13 @@ public class _DiscordAPI extends _API {
         requestData.bot = bot;
         requestData.guildID = guildID;
         requestData.channelID = channelID;
-        requestData.embed = newEmbed;
+        requestData.component = component;
 
         call(requestData, false, new ApiCallback() {
             @Override
             public void onError(String error, String message) {
 
-                System.err.println("DiscordAPI setEmbed " + error + " : " + message);
+                System.err.println("DiscordAPI setComponent(" + error + " : " + message);
             }
 
             @Override
@@ -231,7 +231,7 @@ public class _DiscordAPI extends _API {
         return wasSuccessful.get();
     }
 
-    public boolean sendEmbed(String bot, long guildID, long channelID, _DiscordData.CompactEmbed newEmbed) {
+    public boolean sendComponent(String bot, long guildID, long channelID, _DiscordData.CompactComponent component) {
 
         AtomicBoolean wasSuccessful = new AtomicBoolean(false);
 
@@ -241,13 +241,13 @@ public class _DiscordAPI extends _API {
         requestData.bot = bot;
         requestData.guildID = guildID;
         requestData.channelID = channelID;
-        requestData.embed = newEmbed;
+        requestData.component = component;
 
         call(requestData, false, new ApiCallback() {
             @Override
             public void onError(String error, String message) {
 
-                System.err.println("DiscordAPI sendEmbed " + error + " : " + message);
+                System.err.println("DiscordAPI sendComponent " + error + " : " + message);
             }
 
             @Override
@@ -274,7 +274,7 @@ public class _DiscordAPI extends _API {
         return wasSuccessful.get();
     }
 
-    public boolean editEmbed(String bot, long guildID, long channelID, _DiscordData.CompactEmbed newEmbed) {
+    public boolean editComponent(String bot, long guildID, long channelID, _DiscordData.CompactComponent component) {
 
         AtomicBoolean wasSuccessful = new AtomicBoolean(false);
 
@@ -284,13 +284,13 @@ public class _DiscordAPI extends _API {
         requestData.bot = bot;
         requestData.guildID = guildID;
         requestData.channelID = channelID;
-        requestData.embed = newEmbed;
+        requestData.component = component;
 
         call(requestData, false, new ApiCallback() {
             @Override
             public void onError(String error, String message) {
 
-                System.err.println("DiscordAPI editEmbed " + error + " : " + message);
+                System.err.println("DiscordAPI editComponent " + error + " : " + message);
             }
 
             @Override
@@ -317,7 +317,7 @@ public class _DiscordAPI extends _API {
         return wasSuccessful.get();
     }
 
-    public boolean deleteEmbed(String bot, long guildID, long channelID, String embedID) {
+    public boolean deleteComponent(String bot, long guildID, long channelID, String componentID) {
 
         AtomicBoolean wasSuccessful = new AtomicBoolean(false);
 
@@ -327,14 +327,185 @@ public class _DiscordAPI extends _API {
         requestData.bot = bot;
         requestData.guildID = guildID;
         requestData.channelID = channelID;
-        requestData.embed = new _DiscordData.CompactEmbed();
-        requestData.embed.footer = embedID;
+        requestData.component = new _DiscordData.CompactComponent();
+        requestData.component.footer = componentID;
 
         call(requestData, false, new ApiCallback() {
             @Override
             public void onError(String error, String message) {
 
-                System.err.println("DiscordAPI deleteEmbed " + error + " : " + message);
+                System.err.println("DiscordAPI deleteComponent " + error + " : " + message);
+            }
+
+            @Override
+            public void onResponse(int code, String response) {
+
+                if (code != 200) {
+
+                    throw new RuntimeException("Response code : " + code);
+                }
+
+                _DiscordData responseData = Json.getObject(response, _DiscordData.class);
+
+                if (responseData != null && responseData.response == _Codes.RESPONSE_OK) {
+
+                    wasSuccessful.set(true);
+
+                } else {
+
+                    throw new RuntimeException("Response  : " + response);
+                }
+            }
+        });
+
+        return wasSuccessful.get();
+    }
+
+    //----------------------------
+
+    public boolean setComponent(String bot, long userID, _DiscordData.CompactComponent component) {
+
+        AtomicBoolean wasSuccessful = new AtomicBoolean(false);
+
+        _DiscordData requestData = new _DiscordData();
+        requestData.request = 1009;
+        requestData.subRequest = 2000;
+        requestData.bot = bot;
+        requestData.userID = userID;
+        requestData.component = component;
+
+        call(requestData, false, new ApiCallback() {
+            @Override
+            public void onError(String error, String message) {
+
+                System.err.println("DiscordAPI setComponent(" + error + " : " + message);
+            }
+
+            @Override
+            public void onResponse(int code, String response) {
+
+                if (code != 200) {
+
+                    throw new RuntimeException("Response code : " + code);
+                }
+
+                _DiscordData responseData = Json.getObject(response, _DiscordData.class);
+
+                if (responseData != null && responseData.response == _Codes.RESPONSE_OK) {
+
+                    wasSuccessful.set(true);
+
+                } else {
+
+                    throw new RuntimeException("Response  : " + response);
+                }
+            }
+        });
+
+        return wasSuccessful.get();
+    }
+
+    public boolean sendComponent(String bot, long userID, _DiscordData.CompactComponent component) {
+
+        AtomicBoolean wasSuccessful = new AtomicBoolean(false);
+
+        _DiscordData requestData = new _DiscordData();
+        requestData.request = 1009;
+        requestData.subRequest = 2003;
+        requestData.bot = bot;
+        requestData.userID = userID;
+        requestData.component = component;
+
+        call(requestData, false, new ApiCallback() {
+            @Override
+            public void onError(String error, String message) {
+
+                System.err.println("DiscordAPI sendComponent " + error + " : " + message);
+            }
+
+            @Override
+            public void onResponse(int code, String response) {
+
+                if (code != 200) {
+
+                    throw new RuntimeException("Response code : " + code);
+                }
+
+                _DiscordData responseData = Json.getObject(response, _DiscordData.class);
+
+                if (responseData != null && responseData.response == _Codes.RESPONSE_OK) {
+
+                    wasSuccessful.set(true);
+
+                } else {
+
+                    throw new RuntimeException("Response  : " + response);
+                }
+            }
+        });
+
+        return wasSuccessful.get();
+    }
+
+    public boolean editComponent(String bot, long userID, _DiscordData.CompactComponent component) {
+
+        AtomicBoolean wasSuccessful = new AtomicBoolean(false);
+
+        _DiscordData requestData = new _DiscordData();
+        requestData.request = 1009;
+        requestData.subRequest = 2018;
+        requestData.bot = bot;
+        requestData.userID = userID;
+        requestData.component = component;
+
+        call(requestData, false, new ApiCallback() {
+            @Override
+            public void onError(String error, String message) {
+
+                System.err.println("DiscordAPI editComponent " + error + " : " + message);
+            }
+
+            @Override
+            public void onResponse(int code, String response) {
+
+                if (code != 200) {
+
+                    throw new RuntimeException("Response code : " + code);
+                }
+
+                _DiscordData responseData = Json.getObject(response, _DiscordData.class);
+
+                if (responseData != null && responseData.response == _Codes.RESPONSE_OK) {
+
+                    wasSuccessful.set(true);
+
+                } else {
+
+                    throw new RuntimeException("Response  : " + response);
+                }
+            }
+        });
+
+        return wasSuccessful.get();
+    }
+
+    public boolean deleteComponent(String bot, long userID, String componentID) {
+
+        AtomicBoolean wasSuccessful = new AtomicBoolean(false);
+
+        _DiscordData requestData = new _DiscordData();
+        requestData.request = 1009;
+        requestData.subRequest = 2001;
+        requestData.bot = bot;
+        requestData.userID = userID;
+        requestData.component = new _DiscordData.CompactComponent();
+        requestData.component.footer = componentID;
+
+        call(requestData, false, new ApiCallback() {
+            @Override
+            public void onError(String error, String message) {
+
+                System.err.println("DiscordAPI deleteComponent " + error + " : " + message);
             }
 
             @Override

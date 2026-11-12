@@ -50,7 +50,7 @@ public class _DiscordData {
     public User user;
     public List<User> users;
 
-    public CompactEmbed embed;
+    public CompactComponent component;
 
     public static class AccountData {
 
@@ -68,7 +68,7 @@ public class _DiscordData {
         public String language = clientLanguage;
     }
 
-    public static class CompactEmbed {
+    public static class CompactComponent {
 
         public String title;
         public String description;
