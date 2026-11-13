@@ -66,6 +66,9 @@ public class _DiscordAPI extends _API {
 
     public void call(_DiscordData request, boolean async, ApiCallback callback) {
 
+        request.account = new _DiscordData.AccountData();
+        request.client = new _DiscordData.ClientData();
+
         callPool(request, async, callback);
     }
 
@@ -204,7 +207,7 @@ public class _DiscordAPI extends _API {
             @Override
             public void onError(String error, String message) {
 
-                System.err.println("DiscordAPI setComponent(" + error + " : " + message);
+                System.err.println("DiscordAPI setComponent " + error + " : " + message);
             }
 
             @Override
@@ -378,7 +381,7 @@ public class _DiscordAPI extends _API {
             @Override
             public void onError(String error, String message) {
 
-                System.err.println("DiscordAPI setComponent(" + error + " : " + message);
+                System.err.println("DiscordAPI setComponent " + error + " : " + message);
             }
 
             @Override
