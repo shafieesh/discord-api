@@ -822,6 +822,83 @@ public class _DiscordAPI extends _API {
         return wasSuccessful.get();
     }
 
+    public boolean sendTextMessage(String bot, long userID, _DiscordData.TextMessage message) {
+
+        return sendTextMessage(bot, userID, List.of(message), null);
+    }
+
+    public boolean sendTextMessage(String bot, long userID, _DiscordData.TextMessage message, Path path) {
+
+        return sendTextMessage(bot, userID, List.of(message), List.of(path));
+    }
+
+    public boolean sendTextMessage(String bot, long userID, List<_DiscordData.TextMessage> messages, List<Path> paths) {
+
+        List<_FileData> files = null;
+
+        if (paths != null) {
+
+            files = new ArrayList<>();
+
+            for (Path path : paths) {
+
+                File file = path.toFile();
+
+                if (upload(file)) {
+
+                    _FileData fileData = new _FileData();
+                    fileData.name = file.getName();
+
+                    files.add(fileData);
+
+                } else {
+
+                    return false;
+                }
+            }
+        }
+
+        AtomicBoolean wasSuccessful = new AtomicBoolean(false);
+
+        _DiscordData requestData = new _DiscordData();
+        requestData.request = 1009;
+        requestData.subRequest = 2002;
+        requestData.bot = bot;
+        requestData.userID = userID;
+        requestData.textMessages = messages;
+        requestData.files = files;
+
+        call(requestData, false, new ApiCallback() {
+            @Override
+            public void onError(String error, String message) {
+
+                System.err.println("DiscordAPI sendTextMessage " + error + " : " + message);
+            }
+
+            @Override
+            public void onResponse(int code, String response) {
+
+                if (code != 200) {
+
+                    throw new RuntimeException("Response code : " + code);
+                }
+
+                _DiscordData responseData = Json.getObject(response, _DiscordData.class);
+
+                if (responseData != null && responseData.response == _Codes.RESPONSE_OK) {
+
+                    wasSuccessful.set(true);
+
+                } else {
+
+                    throw new RuntimeException("Response  : " + response);
+                }
+            }
+        });
+
+        return wasSuccessful.get();
+    }
+
     //----------------------------------------------------------
 
     public Long addChannel(long categoryID, String channelName) {

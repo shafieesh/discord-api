@@ -3,10 +3,7 @@ package com.chainedminds.discord.api.models;
 import com.chainedminds.discord.api._DiscordAPI;
 import com.chainedminds.models._FileData;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class _DiscordData {
 
@@ -24,6 +21,9 @@ public class _DiscordData {
 
     public String message;
     public List<String> messages;
+
+    public TextMessage textMessage;
+    public List<TextMessage> textMessages;
 
     public _FileData file;
     public List<_FileData> files;
@@ -68,6 +68,18 @@ public class _DiscordData {
         public String language = clientLanguage;
     }
 
+    public static class Localizations {
+
+        public List<String> keys = new ArrayList<>();
+        public Map<String, String> placeholders = new HashMap<>();
+    }
+
+    public static class TextMessage {
+
+        public String message;
+        public Localizations localizations;
+    }
+
     public static class CompactComponent {
 
         public String title;
@@ -79,6 +91,7 @@ public class _DiscordData {
         public List<ButtonData> buttons = new ArrayList<>();
         public List<Long> mentionUsers;
         public List<Long> mentionRoles;
+        public Localizations localizations;
 
         public static class Field {
 
